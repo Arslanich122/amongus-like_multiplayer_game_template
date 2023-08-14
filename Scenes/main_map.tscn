@@ -1,0 +1,134 @@
+[gd_scene load_steps=10 format=3 uid="uid://by85phx3o7m2d"]
+
+[ext_resource type="Script" path="res://Scripts/world.gd" id="1_cemay"]
+[ext_resource type="AudioStream" uid="uid://drkommi0wtvqj" path="res://Assets/zapsplat_multimedia_button_click_bright_002_92099.mp3" id="2_127uu"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_34c1n"]
+sky_top_color = Color(0.0980392, 0.0196078, 0.294118, 1)
+sky_horizon_color = Color(0.447059, 0.458824, 0.47451, 1)
+sky_energy_multiplier = 0.72
+sky_cover_modulate = Color(0, 0, 0, 1)
+ground_bottom_color = Color(0.317647, 0.345098, 0.392157, 1)
+
+[sub_resource type="Sky" id="Sky_4eu6a"]
+sky_material = SubResource("ProceduralSkyMaterial_34c1n")
+
+[sub_resource type="Environment" id="Environment_ata31"]
+background_mode = 2
+sky = SubResource("Sky_4eu6a")
+ambient_light_color = Color(0.25098, 0.25098, 0.25098, 1)
+tonemap_mode = 2
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+glow_normalized = true
+fog_enabled = true
+fog_light_color = Color(1, 1, 1, 1)
+fog_light_energy = 0.37
+fog_sky_affect = 0.365
+fog_height = 375.13
+fog_height_density = -16.0
+volumetric_fog_enabled = true
+adjustment_brightness = 0.65
+adjustment_contrast = 0.92
+adjustment_saturation = 1.63
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tqyfc"]
+albedo_color = Color(0.345098, 0.513726, 0.235294, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_u73e7"]
+material = SubResource("StandardMaterial3D_tqyfc")
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_fdlq0"]
+data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_of31e"]
+
+[node name="main_root" type="Node3D"]
+script = ExtResource("1_cemay")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ata31")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(19.3034, 0, 0, 0, 1, 0, 0, 0, 19.3793, 0, 0, 0)
+mesh = SubResource("PlaneMesh_u73e7")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_fdlq0")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.849893, 0.476366, -0.225293, 0.00190356, 0.42476, 0.905304, 0.526951, -0.769841, 0.360094, 0, 36.1966, 0)
+light_color = Color(0.266667, 0.266667, 0.266667, 1)
+light_energy = 0.0
+light_indirect_energy = 8.0
+light_bake_mode = 1
+shadow_enabled = true
+shadow_bias = 0.0
+shadow_normal_bias = 3.0
+shadow_transmittance_bias = 7.06
+shadow_opacity = 0.75
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" type="PanelContainer" parent="CanvasLayer"]
+material = SubResource("CanvasItemMaterial_of31e")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 716.0
+offset_top = 337.0
+offset_right = -674.0
+offset_bottom = -449.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/MainMenu"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MainMenu/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 33
+text = "Camp \"Moonwoods\""
+
+[node name="Host" type="Button" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Создать сервер"
+
+[node name="Join" type="Button" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Присоединиться"
+
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/MainMenu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+placeholder_text = "Введите IP сервера..."
+alignment = 1
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://Scenes/player.tscn")
+spawn_path = NodePath("..")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_127uu")
+
+[connection signal="button_down" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/Host" to="." method="_on_host_button_down"]
+[connection signal="mouse_entered" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/Host" to="." method="_on_host_mouse_entered"]
+[connection signal="button_down" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/Join" to="." method="_on_join_button_down"]
+[connection signal="mouse_entered" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/Join" to="." method="_on_join_mouse_entered"]
+[connection signal="mouse_entered" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_mouse_entered"]
